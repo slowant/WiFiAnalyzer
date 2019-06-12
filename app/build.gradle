@@ -55,6 +55,7 @@ dependencies {
     androidTestImplementation "com.android.support.test.espresso:espresso-core:$espressoVersion"
     androidTestImplementation "com.android.support.test:runner:$testVersion"
     androidTestImplementation "com.android.support.test:rules:$testVersion"
+    implementation project(':wificonnect')
 }
 
 android {

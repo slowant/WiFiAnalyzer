@@ -204,7 +204,7 @@ public class GraphViewWrapper {
             WiFiDetail wiFiDetail = seriesCache.find(series);
             if (wiFiDetail != null) {
                 View popupView = getAccessPointDetail().makeViewDetailed(wiFiDetail);
-                getAccessPointPopup().show(popupView);
+                getAccessPointPopup().show(popupView, wiFiDetail);
             }
         }
 

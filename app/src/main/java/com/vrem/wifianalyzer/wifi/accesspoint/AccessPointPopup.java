@@ -27,12 +27,13 @@ import com.vrem.wifianalyzer.R;
 import com.vrem.wifianalyzer.wifi.model.WiFiDetail;
 
 public class AccessPointPopup {
+    private AccessPointsAdapter.ItemClickListener itemClickListener;
 
-    public Dialog show(@NonNull View view) {
+    public Dialog show(@NonNull View view, WiFiDetail wiFiDetail) {
         try {
             Dialog dialog = new Dialog(view.getContext());
             dialog.setContentView(view);
-            dialog.findViewById(R.id.popupButtonClose).setOnClickListener(new PopupDialogCloseListener(dialog));
+            dialog.findViewById(R.id.popupButtonClose).setOnClickListener(new PopupDialogCloseListener(dialog, wiFiDetail));
             dialog.show();
             return dialog;
         } catch (Exception e) {
@@ -45,16 +46,26 @@ public class AccessPointPopup {
         view.setOnClickListener(new PopupDialogOpenListener(wiFiDetail));
     }
 
-    private class PopupDialogCloseListener implements OnClickListener {
-        private final Dialog dialog;
+    public void setItemClickListener(AccessPointsAdapter.ItemClickListener listener) {
+        itemClickListener = listener;
+    }
 
-        PopupDialogCloseListener(@NonNull Dialog dialog) {
+    public class PopupDialogCloseListener implements OnClickListener {
+        private final Dialog dialog;
+        private final WiFiDetail wiFiDetail;
+
+        PopupDialogCloseListener(@NonNull Dialog dialog, @NonNull WiFiDetail wiFiDetail) {
             this.dialog = dialog;
+            this.wiFiDetail= wiFiDetail;
         }
 
         @Override
         public void onClick(View view) {
             dialog.dismiss();
+            if(itemClickListener != null){
+                itemClickListener.onItemClick(wiFiDetail);
+            }
+
         }
     }
 
@@ -67,7 +78,7 @@ public class AccessPointPopup {
 
         @Override
         public void onClick(View view) {
-            show(new AccessPointDetail().makeViewDetailed(wiFiDetail));
+            show(new AccessPointDetail().makeViewDetailed(wiFiDetail), wiFiDetail);
         }
     }
 

@@ -35,6 +35,7 @@ class AccessPointsAdapter extends BaseExpandableListAdapter implements UpdateNot
     private AccessPointDetail accessPointDetail;
     private AccessPointPopup accessPointPopup;
     private ExpandableListView expandableListView;
+    private ItemClickListener itemClickListener;
 
     AccessPointsAdapter() {
         super();
@@ -42,6 +43,10 @@ class AccessPointsAdapter extends BaseExpandableListAdapter implements UpdateNot
         setAccessPointDetail(new AccessPointDetail());
         setAccessPointPopup(new AccessPointPopup());
         expandableListView = null;
+    }
+
+    public void setItemClickListener(ItemClickListener listener){
+        itemClickListener = listener;
     }
 
     @Override
@@ -149,7 +154,12 @@ class AccessPointsAdapter extends BaseExpandableListAdapter implements UpdateNot
         if (popupView != null) {
             accessPointPopup.attach(popupView, wiFiDetail);
             accessPointPopup.attach(view.findViewById(R.id.ssid), wiFiDetail);
+            accessPointPopup.setItemClickListener(itemClickListener);
         }
+    }
+
+    interface ItemClickListener{
+        void onItemClick(WiFiDetail wiFiDetail);
     }
 
 }

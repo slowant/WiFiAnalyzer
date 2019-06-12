@@ -29,12 +29,16 @@ import android.widget.ExpandableListView;
 
 import com.vrem.wifianalyzer.MainContext;
 import com.vrem.wifianalyzer.R;
+import com.vrem.wifianalyzer.wifi.model.WiFiDetail;
 import com.vrem.wifianalyzer.wifi.refresh.RefreshAction;
 import com.vrem.wifianalyzer.wifi.refresh.RefreshListener;
+
+import trip.taobao.com.wificonnect.wifilibrary.WiFiManager;
 
 public class AccessPointsFragment extends Fragment implements RefreshAction {
     private SwipeRefreshLayout swipeRefreshLayout;
     private AccessPointsAdapter accessPointsAdapter;
+    private WiFiManager mWiFiManager;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -50,6 +54,27 @@ public class AccessPointsFragment extends Fragment implements RefreshAction {
         accessPointsAdapter.setExpandableListView(expandableListView);
 
         MainContext.INSTANCE.getScannerService().register(accessPointsAdapter);
+
+        // WIFI管理器
+        mWiFiManager = WiFiManager.getInstance(getContext().getApplicationContext());
+
+        accessPointsAdapter.setItemClickListener(new AccessPointsAdapter.ItemClickListener() {
+            @Override
+            public void onItemClick(WiFiDetail wiFiDetail) {
+                switch (mWiFiManager.getSecurityMode(wiFiDetail.getCapabilities())) {
+                    case WPA:
+                    case WPA2:
+                        mWiFiManager.connectWPA2Network(wiFiDetail.getSSID(), "12345678");
+                        break;
+                    case WEP:
+                        mWiFiManager.connectWEPNetwork(wiFiDetail.getSSID(), "12345678");
+                        break;
+                    case OPEN: // 开放网络
+                        mWiFiManager.connectOpenNetwork(wiFiDetail.getSSID());
+                        break;
+                }
+            }
+        });
 
         return view;
     }
